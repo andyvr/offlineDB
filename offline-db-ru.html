@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0014)about:internet -->
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -362,6 +362,7 @@ var saveAs=saveAs||navigator.msSaveOrOpenBlob&&navigator.msSaveOrOpenBlob.bind(n
 			  'records_ttl'	: 'Записи',
 			  'login_msg'	: 'Вы зашли в режим редактирования!',
 			  'logout_msg'	: 'Вы зашли в режим просмотра!',
+			  'login_fail'	: 'Невозможно зайти в режим редактирования!',
 			  'add_cat_msg'	: 'Вы добавили новую категорию!',
 			  'save_cat_msg': 'Вы изменили название категории на: ',
 			  'del_cat_msg'	: 'Категория была удалена!',
@@ -402,8 +403,9 @@ var saveAs=saveAs||navigator.msSaveOrOpenBlob&&navigator.msSaveOrOpenBlob.bind(n
 				if($scope.logged) return true;
 				else if (logn == 'admin' && pass == 'admin')
 				{
-					localstore('set', 'logged', true);
-					$scope.notify($scope.language.login_msg);
+					var modechange = localstore('set', 'logged', true);
+					if (modechange) $scope.notify($scope.language.login_msg);
+					else $scope.notify($scope.language.login_fail);
 				}
 				$scope.logged = localstore('get', 'logged');
 			}
@@ -691,7 +693,7 @@ var saveAs=saveAs||navigator.msSaveOrOpenBlob&&navigator.msSaveOrOpenBlob.bind(n
 		{
 			if (typeof(localStorage) == 'undefined' ) 
 			{
-				console.log("Not Supported by the browser");
+				if (typeof(console) !== 'undefined') console.log("Not Supported by the browser");
 				return false;
 			} else {
 				try {
@@ -700,7 +702,7 @@ var saveAs=saveAs||navigator.msSaveOrOpenBlob&&navigator.msSaveOrOpenBlob.bind(n
 					return true;
 				} catch (e) {
 					if (e == QUOTA_EXCEEDED_ERR) {
-						console.log("data wasn't successfully saved due to quota exceed");
+						if (typeof(console) !== 'undefined') console.log("data wasn't successfully saved due to quota exceed");
 						return false;
 					}
 				}

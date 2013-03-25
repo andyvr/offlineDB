@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0016)http://localhost -->
+<!-- saved from url=(0014)about:internet -->
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -362,6 +362,7 @@ var saveAs=saveAs||navigator.msSaveOrOpenBlob&&navigator.msSaveOrOpenBlob.bind(n
 			  'records_ttl'	: 'Records',
 			  'login_msg'	: 'You have entered the edit mode!',
 			  'logout_msg'	: 'You have entered the view mode!',
+			  'login_fail'	: 'Can\'t enter edit mode!',
 			  'add_cat_msg'	: 'You have added a new category!',
 			  'save_cat_msg': 'You\'ve changed the category name to: ',
 			  'del_cat_msg'	: 'You have deleted the category!',
@@ -402,8 +403,9 @@ var saveAs=saveAs||navigator.msSaveOrOpenBlob&&navigator.msSaveOrOpenBlob.bind(n
 				if($scope.logged) return true;
 				else if (logn == 'admin' && pass == 'admin')
 				{
-					localstore('set', 'logged', true);
-					$scope.notify($scope.language.login_msg);
+					var modechange = localstore('set', 'logged', true);
+					if (modechange) $scope.notify($scope.language.login_msg);
+					else $scope.notify($scope.language.login_fail);
 				}
 				$scope.logged = localstore('get', 'logged');
 			}
@@ -690,7 +692,7 @@ var saveAs=saveAs||navigator.msSaveOrOpenBlob&&navigator.msSaveOrOpenBlob.bind(n
 		{
 			if (typeof(localStorage) == 'undefined' ) 
 			{
-				console.log("Not Supported by the browser");
+				if (typeof(console) !== 'undefined') console.log("Not Supported by the browser");
 				return false;
 			} else {
 				try {
@@ -699,7 +701,7 @@ var saveAs=saveAs||navigator.msSaveOrOpenBlob&&navigator.msSaveOrOpenBlob.bind(n
 					return true;
 				} catch (e) {
 					if (e == QUOTA_EXCEEDED_ERR) {
-						console.log("data wasn't successfully saved due to quota exceed");
+						if (typeof(console) !== 'undefined') console.log("data wasn't successfully saved due to quota exceed");
 						return false;
 					}
 				}
